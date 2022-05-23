@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aerosimu</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="aerosimu.js"></script>
+</head>
+<body>
+    <div class="grid-container">
+
+        
+        
+    
+        <div class="grid-child purple" onclick="toggleAnimation()">
+            <div class="map-container">
+                
+                <div class="lost -map">
+                    <div class="map">
+
+                        <div class="lost -runway">
+                            <img class="map" src="aeroport_map.jpg" alt="" srcset="">
+                        </div>
+
+                        <!-- <div class="lost -runway">
+                            <div class="runway bg-black"></div>
+                        </div> -->
+                        
+                        <div class="lost -loc">
+                            <div class="loc">
+                                
+                                <div class="lost">
+                                    <div class="triangle-up end-t tria1"></div>
+                                </div>
+                                <div class="lost">
+                                    <div class="triangle-up end-t tria2"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="lost -plane">
+                    <div class="plane">
+                        <img src="plane.png" alt=""style="height: 100%;">
+                    </div>
+                </div>
+                
+                <!-- <div class="lost">
+                    <div class="point bg-blue"></div>
+                </div> -->
+                <!-- <div class="lost">
+                    <div class="point bg-green"></div>
+                </div>
+                <div class="lost">
+                    <div class="line bg-blue"></div>
+                </div> -->
+
+
+                <div id="place-holder"></div>
+            </div>
+            <div class="scale">
+                <div>1km</div>
+            </div>
+        </div>
+
+        <div class="grid-child green">
+            <div class="map-container">
+
+                <div class="lost -pfd">
+                    <div>
+                        <div class="lost -pfd">
+                            <img class="pfd" src="PFD.png" alt="" srcset="">
+                        </div>
+                        <div class="lost -idicatorX">
+                            <div class="indicatorX"></div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="auto_landing">
+                <div class="-auto_landing" onclick="toggleAutoLanding()"></div>
+            </div>
+        </div>
+
+      
+    </div>
+</body>
+</html>
+
+
