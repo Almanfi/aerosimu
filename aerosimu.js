@@ -6,6 +6,7 @@ setTimeout(function initialize () {
   loc    = document.querySelector("div.loc");
   plane  =  document.querySelector("div.plane");
   indicatorX  =  document.querySelector("div.indicatorX");
+  loc_freq  =  document.querySelector("div.loc-freq > input")
   
 
   auto_landing_Btn  =  document.querySelector("div.auto_landing > div");
@@ -22,6 +23,8 @@ setTimeout(function initialize () {
   placeXY (map,plane_obj.position.x,plane_obj.position.y)
   rotate ( map, -plane_obj.angle.phi)
   update_indicator (18)
+  set_loc_freq (109.7);
+
 
   coordinate = {
     // runway : {
@@ -194,6 +197,16 @@ function update_indicator (X_max) {
 
 }
 
+function set_loc_freq (freq) {
+  if (loc_freq.value == freq) {
+    loc.style.display = ""
+    auto_landing_ON = true;
+  } else {
+    loc.style.display = "none"
+    auto_landing_ON = false;
+  }
+}
+
 
 
 function km_rem (km) {
@@ -313,6 +326,8 @@ function anim () {
   // console.log(plane_obj.speed , -plane_obj.position.y)
   
   plane_landing (stop_point, contact_point , plane_obj.speed);
+
+  set_loc_freq (109.7);
 
   auto_landing (auto_landing_ON);
 

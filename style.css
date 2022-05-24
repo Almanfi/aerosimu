@@ -148,6 +148,14 @@ body{
     background-color: green;
 }
 
+.loc-freq * {
+    top: -30rem;
+    font-size: 4rem;
+    position: relative;
+    margin: 0;
+    text-align: center;
+}
+
 
 
 .scale {
