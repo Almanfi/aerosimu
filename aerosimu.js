@@ -102,6 +102,7 @@ function keyboard (event) {
 var coordinate;
 var toggle = false;
 var auto_landing_ON = true;
+var loc_captured = true;
 function toggleAutoLanding() {
   if (!auto_landing_ON) {
     auto_landing_ON = true;
@@ -116,7 +117,7 @@ function toggleAutoLanding() {
 
 var plane_obj = {
     position : {
-        x : 12,
+        x : 20,
         y : 100,
         z : 0
     },
@@ -160,17 +161,13 @@ var X = plane_obj.position.x;
 
 function auto_landing () {
 
-  if ( (-plane_obj.position.y  < contact_point) & auto_landing_ON) {
+  if ( (-plane_obj.position.y  < contact_point) & auto_landing_ON & loc_captured) {
     
     if (plane_obj.position.x) {
       
       y_to_contact = plane_obj.position.y + contact_point;
       plane_obj.position.x = X * (Math.exp(-ms/(y_to_contact * 30)))
       
-      
-      // console.log(plane_obj.position.x, ms, y_to_contact)
-
-      // plane_obj.position.x -= plane_obj.position.x/40;
     }
 
     if (-stop_point-plane_obj.position.y < 0){
@@ -180,8 +177,6 @@ function auto_landing () {
     }else{
       plane_obj.angle.phi = 0; 
     }
-    // console.log(plane_obj.position.x,(Math.abs(-stop_point-plane_obj.position.y)),plane_obj.angle.phi)
-
   }
 }
 
@@ -198,12 +193,13 @@ function update_indicator (X_max) {
 }
 
 function set_loc_freq (freq) {
+
   if (loc_freq.value == freq) {
-    loc.style.display = ""
-    auto_landing_ON = true;
+    loc.style.display = "";
+    loc_captured = true;
   } else {
-    loc.style.display = "none"
-    auto_landing_ON = false;
+    loc.style.display = "none";
+    loc_captured = false;
   }
 }
 
@@ -325,13 +321,14 @@ function anim () {
   
   // console.log(plane_obj.speed , -plane_obj.position.y)
   
-  plane_landing (stop_point, contact_point , plane_obj.speed);
-
+  
   set_loc_freq (109.7);
-
+  
   auto_landing (auto_landing_ON);
-
+  
   update_indicator (18);
+  
+  plane_landing (stop_point, contact_point , plane_obj.speed);
 
   placeXY (map,plane_obj.position.x,plane_obj.position.y)
   rotate ( map, -plane_obj.angle.phi)
@@ -358,9 +355,11 @@ function toggleAnimation(timestamp) {
   if (!toggle) {
     toggle = true;
     window.requestAnimationFrame(step);
+    
   } else {
     toggle = false;
     cancelAnimationFrame(stopId);
+    X = plane_obj.position.x;
 
   }
 }

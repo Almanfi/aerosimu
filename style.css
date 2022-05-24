@@ -142,9 +142,11 @@ body{
     top: 80%;
     right: -80%;
     position : relative;
+    font-size: 3rem;
+    text-align: center;
 }.auto_landing > div {
-    width: 10vh;
-    height: 5vh;
+    width: 12vh;
+    /* height: 5vh; */
     background-color: green;
 }
 
