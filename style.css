@@ -1,0 +1,172 @@
+/* ----------------------------------layout---------------------------------- */
+body{
+    margin: 0px;
+    padding: 0px;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0px;
+    height: 100vh;
+}
+.green {
+    display: grid;
+    background-color: rgba(0, 128, 0, 0.116);
+    max-height: 100vh;
+    overflow: hidden;
+    /* background-image: url(map.PNG);
+    background-size: 100vh; */
+}
+.purple {
+    display: grid;
+    background-color: rgba(128, 0, 128, 0.123);
+    max-height: 100vh;
+    overflow: hidden;
+}
+.map-container {
+    /* display: grid;
+    place-self: center;
+    place-items: center;
+    text-align: center; */
+    position: relative;
+    top: 50%;
+}
+/* .grid-center {
+    grid-column: 1 / 4;
+    grid-row: 1 / 4;
+} */
+.lost {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ----------------------------------shapes---------------------------------- */
+.point {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    background-color: red;
+    position: relative;
+    /* left: -4px; */
+    /* position: absolute; */
+}
+.triangle-up {
+    width: 0;
+    height: 0;
+    opacity: 0.2;
+    border-left: 20rem solid transparent;
+    border-right: 20rem solid transparent;
+    transform-origin: top center;
+    
+/* 
+    position: relative; */
+    /* left: -35px; */
+}
+.tria1 {
+    border-bottom: 400rem solid rgb(0, 162, 255);
+    transform: rotate(2deg);
+}
+.tria2 {
+    border-bottom: 400rem solid rgb(0, 255, 115);
+    transform: rotate(-2deg);
+}
+
+/* ----------------------------------colors---------------------------------- */
+.bg-red {
+    background-color: brown;
+    height: 20rem;
+    width: 20rem;
+    /* left: 0rem; */
+}
+.bg-green {
+    background-color: green;
+}
+.bg-blue {
+    background-color: blue;
+    height: 2rem;
+    width: 2rem; 
+    /* left: -1rem; */
+    /* transform: translateX(0rem); */
+    /* top: -.5rem; */
+}
+.bg-black {
+    background-color: black;
+}
+
+
+/* ----------------------------------objects---------------------------------- */
+.plane {
+    position: relative;
+    height: 5rem;
+    /* border: 0.01em solid white; */
+    filter: invert();
+}
+.line {
+    height: 100vh;
+    width: 0.05rem;
+    position: relative;
+}
+.runway {
+    height: 50rem;
+    width: 4rem;
+    opacity: .7;
+    background-image: url(map.PNG);
+}
+.loc {
+    height: 400rem;
+}
+.map {
+    left: -1.44%;
+    position: relative;
+    height: 800rem;
+    top: -108rem;
+    transform: rotate(-0.1deg);
+}
+
+.pfd {
+    height: 40vh;
+    transform: translate(5.7%, 3%);
+}
+.indicatorX {
+    height: 12vh;
+    width: 0.6vh;
+    background-color: blueviolet;
+    transform: translateX(0vh);
+
+}
+
+.auto_landing {
+    height: 1rem;
+    top: 80%;
+    right: -80%;
+    position : relative;
+}.auto_landing > div {
+    width: 10vh;
+    height: 5vh;
+    background-color: green;
+}
+
+
+
+.scale {
+    width: 1rem;
+    height: 0.5rem;
+    border-right: solid black 0.05rem;
+    border-left: solid black 0.05rem;
+    position: absolute;
+    top: 80%;
+    right: -80%;
+    position : relative;
+}.scale > div {
+
+    width: 1rem;
+    height: 0.05rem;
+    background-color: black;
+    position : absolute;
+    top : 50%;
+}
+
+
+
