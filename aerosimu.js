@@ -2,7 +2,6 @@ setTimeout(function initialize () {
   place_holder = document.querySelector("#place-holder");
   line   = document.querySelector("div.line.bg-blue");
   map    = document.querySelector("div.map");
-  // runway = document.querySelector("div.runway");
   loc    = document.querySelector("div.loc");
   plane  =  document.querySelector("div.plane");
   indicatorX  =  document.querySelector("div.indicatorX");
@@ -11,9 +10,6 @@ setTimeout(function initialize () {
 
   auto_landing_Btn  =  document.querySelector("div.auto_landing > div");
   
-
-  blue = document.querySelector("div.point.bg-blue");
-  green = document.querySelector("div.point.bg-green");
 
   document.addEventListener("keydown", keyboard);
 
@@ -27,15 +23,6 @@ setTimeout(function initialize () {
 
 
   coordinate = {
-    // runway : {
-    //   elem : runway,
-    //   x : 0,
-    //   y : 50,
-    //   z : 0,
-    //   x0 : 0,
-    //   y0 : 1,
-    //   z0 : 0,
-    // },
     plane_obj : {
       elem : place_holder,
       x : 0,
@@ -382,34 +369,3 @@ function toggleAnimation(timestamp) {
 
   }
 }
-
-
-//-------------------------------------------------------------------------------------------------------------------
-// function myMove() {
-//   let id = null;
-//   const elem = document.querySelector("div.plane_obj");   
-//   let pos = 90;
-//   clearInterval(id);
-//   id = setInterval(frame, 5);
-//   function frame() {
-//     if (pos < 10) {
-//       clearInterval(id);
-//     } else {
-//       pos-=0.1; 
-//       elem.style.top = pos + "%"; 
-      
-//     }
-//   }
-// }
-
-// function place (elem,x,y) {
-//   x_pos = x ;
-//   y_pos = y ;
-//   // x_pos = x - (size_elem.width)/2;
-//   // y_pos = y - (size_elem.height)/2;
-//   elem.style.position = "relative";
-//   elem.style.transform = "translate("+x_pos+"px, "+y_pos+"px)"
-
-// }
-
-
