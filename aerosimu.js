@@ -3,7 +3,7 @@ setTimeout(function initialize () {
   line   = document.querySelector("div.line.bg-blue");
   map    = document.querySelector("div.map");
   loc    = document.querySelector("div.loc");
-  plane  =  document.querySelector("div.plane");
+  plane_div  =  document.querySelector("div.plane");
   indicatorX  =  document.querySelector("div.indicatorX");
   loc_freq  =  document.querySelector("div.loc-freq > input")
   
@@ -16,14 +16,14 @@ setTimeout(function initialize () {
   auto_landing_ON = true;
   loc_scope (800);
   onMap.km_rem(5);
-  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  onMap.rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane.position.x,plane.position.y)
+  onMap.rotate ( map, -plane.angle.phi)
   update_indicator (18)
   set_loc_freq (109.7);
 
 
   coordinate = {
-    plane_obj : {
+    plane : {
       elem : place_holder,
       x : 0,
       y : 0,
@@ -52,8 +52,6 @@ setTimeout(function initialize () {
     }
   }
 
-  // onMap.km_rem (1);
-
 
 //positioning
   for (const prop in coordinate) {
@@ -72,24 +70,21 @@ function keyboard (event) {
   if (event.code === "ArrowLeft")
   {
       console.log("left")
-      plane_obj.position.x += 0.2;
+      plane.angle.phi -= 0.1;
       event.preventDefault();
   }
   if (event.code === "ArrowRight")
   {
       console.log("right")
-      plane_obj.position.x -= 0.2;
+      plane.angle.phi += 0.1;
       event.preventDefault();
   }
-  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  onMap.rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane.position.x,plane.position.y)
+  onMap.rotate ( map, -plane.angle.phi)
   update_indicator (18)
 }
 
-var coordinate;
-var toggle = false;
-var auto_landing_ON = true;
-var loc_captured = true;
+
 function toggleAutoLanding() {
   if (!auto_landing_ON) {
     auto_landing_ON = true;
@@ -102,30 +97,77 @@ function toggleAutoLanding() {
 }
 
 
-var plane_obj = {
+var plane = {
     position : {
         x : 20,
-        y : 100,
+        y : 150,
         z : 0
     },
     angle : {
-        phi : 0,
+        phi : 10,
         theta : 0,
         alpha : 0
     },
-    speed : 0.05,
+    speed : 0.02,
     fuel : 0.5,
     alert : false,
     max_phi : 1,
     max_theta : 1,
     turn_left()  {
-        plane_obj.angle.phi += plane_obj.max_phi;
-        return plane_obj.angle.phi
+        plane.angle.phi += plane.max_phi;
+        return plane.angle.phi
     },
     turn_right()  {
-        plane_obj.angle.phi -= plane_obj.max_phi;
-        return plane_obj.angle.phi
+        plane.angle.phi -= plane.max_phi;
+        return plane.angle.phi
     },
+    moving () {
+      var r = plane.speed * step_time
+      if (-plane.position.y < stop_point) {
+        dx = Math.sin(plane.angle.phi*Math.PI/180) * r;
+        dy = Math.cos(plane.angle.phi*Math.PI/180) * r;
+      }
+      if (-plane.position.y < stop_point) {
+        plane.position.y -= dy;
+        plane.position.x -= dx;
+        onMap.rotate(plane_div,plane.angle.phi)
+      }
+    },
+    auto_landing () {
+      currentX = plane.position.x;
+      let distanceX = lastX - currentX;
+      if (-plane.position.x < 0) {
+        if (distanceX>0) {
+            // plane.angle.phi -= 0.1;
+            plane.angle.phi -= 0.1;
+            console.log("hey ",plane.angle.phi)
+          }
+      }
+      // if (distanceX>0) {
+      //   plane.angle.phi -= 0.1;
+      // } else {
+      //   plane.angle.phi += 0.1;
+      // }
+      // console.log("hey")
+      lastX = currentX;
+
+
+
+      // var Xpos = plane.position.x+5;
+      // if (-plane.position.x < 0) {
+      //   if(plane.angle.phi < 30 & -plane.position.x < -10 ) {
+      //     console.log("1   plane.angle.phi < 30 & -plane.position.x < -10")
+      //     plane.angle.phi -= 0.01;
+      //   }else if (plane.angle.phi < 30 & -plane.position.x < 0 ) {
+      //     console.log("2   plane.angle.phi < 30 & -plane.position.x < 0 ")
+      //     plane.angle.phi -= 0.1;
+      //   }
+        
+      // } 
+      // else if (-plane.position.x > 0) {
+      //   plane.angle.phi = -Xpos*Xpos/40;
+      // }
+    }
 }
 
 function loc_scope (height) {
@@ -148,30 +190,30 @@ var X;
 
 function auto_landing () {
 
-  if ( (-plane_obj.position.y  < contact_point) & auto_landing_ON & loc_captured) {
+  if ( (-plane.position.y  < contact_point) & auto_landing_ON & loc_captured) {
     
-    if (plane_obj.position.x) {
+    if (plane.position.x) {
       
-      y_to_contact = plane_obj.position.y + contact_point;
-      plane_obj.position.x = X * (Math.exp(-ms/(y_to_contact * 30)))
+      y_to_contact = plane.position.y + contact_point;
+      plane.position.x = X * (Math.exp(-ms/(y_to_contact * 30)))
       
     }
 
-    if (-stop_point-plane_obj.position.y < 0){
+    if (-stop_point-plane.position.y < 0){
       
-      phi_rad = Math.atan(plane_obj.position.x/(Math.abs(-stop_point-plane_obj.position.y)))
-      plane_obj.angle.phi = phi_rad*180/Math.PI;
+      phi_rad = Math.atan(plane.position.x/(Math.abs(-stop_point-plane.position.y)))
+      plane.angle.phi = phi_rad*180/Math.PI;
     }else{
-      plane_obj.angle.phi = 0; 
+      plane.angle.phi = 0; 
     }
   }
 }
 
 function update_indicator (X_max) {
-  if (plane_obj.position.x > X_max) {
+  if (plane.position.x > X_max) {
     indicatorX.style.display = "none";
   }else{
-    let indicatorX_pos = plane_obj.position.x*9/X_max
+    indicatorX_pos = plane.position.x*9/X_max
 
     indicatorX.style.display = "";
     indicatorX.style.transform = "translateX("+ indicatorX_pos +"vh)"
@@ -238,10 +280,14 @@ var onMap = {
     parent.style.top = 50 - y_pos + "%";
   },
   rotate (elem,deg) {
-    elem.style.transform = "onMap.rotate("+deg+"deg)"
+    elem.style.transform = "rotate("+deg+"deg)"
   },
 } 
 
+var coordinate;
+var toggle = false;
+var auto_landing_ON = true;
+var loc_captured = true;
 let start, previousTimeStamp;
 var ms, distance;
 var max_time;
@@ -253,12 +299,15 @@ var dx;
 var contact_point;
 var stop_point;
 var max_speed;
+var indicatorX_pos = 9;
+var lastX = plane.position.x+1;
+var currentX = plane.position.x;
 
 var SPEED_ON_CONTACT, TIME_OF_CONTACT, slow_factor, slow_rate ;
 var final_speed;
 function init () {
   ms = 0;
-  distance = plane_obj.position.y;
+  distance = plane.position.y;
   max_time = 120000;
   speed = 0.05;
   ang = 0 ;
@@ -266,12 +315,12 @@ function init () {
   step_time = 16.66;
   contact_point = 80;
   stop_point = 323;
-  max_speed = plane_obj.speed;
+  max_speed = plane.speed;
   
 
   final_speed = 0.005;
 
-  X = plane_obj.position.x;
+  X = plane.position.x;
 }
 
 init ();
@@ -279,10 +328,10 @@ init ();
 
 function plane_slowing (final_speed) {
   let slow_speed;
-  if (plane_obj.speed > final_speed) {
+  if (plane.speed > final_speed) {
     
     if (SPEED_ON_CONTACT === undefined) {
-      SPEED_ON_CONTACT = plane_obj.speed;
+      SPEED_ON_CONTACT = plane.speed;
       TIME_OF_CONTACT = ms;
       slow_factor = 10;
       slow_rate = Math.log(slow_factor*SPEED_ON_CONTACT/0.01) + 1;
@@ -300,44 +349,46 @@ function plane_slowing (final_speed) {
 }
 
 function plane_landing (stop_point, contact_point , speed) {
-  if (-plane_obj.position.y < contact_point) {
+  if (-plane.position.y < contact_point) {
     dx = speed * step_time
 
   }else{
-    if (-plane_obj.position.y < stop_point) {
+    if (-plane.position.y < stop_point) {
       
-      plane_obj.speed = plane_slowing (final_speed);
+      plane.speed = plane_slowing (final_speed);
       
 
-      dx = plane_obj.speed * step_time
+      dx = plane.speed * step_time
 
 
     }else{
-      console.log("stoped  " + plane_obj.position.y )
+      console.log("stoped  " + plane.position.y )
     }
   }
-  if (-plane_obj.position.y < stop_point) {
+  if (-plane.position.y < stop_point) {
 
-    plane_obj.position.y -= dx;
+    plane.position.y -= dx;
     
   }
 }
 
 function anim () {
   
-  // console.log(plane_obj.speed , -plane_obj.position.y)
+  // console.log(plane.speed , -plane.position.y)
   
   
   set_loc_freq (109.7);
-  
-  auto_landing (auto_landing_ON);
-  
   update_indicator (18);
   
-  plane_landing (stop_point, contact_point , plane_obj.speed);
+  // auto_landing (auto_landing_ON);
+  
+  // plane_landing (stop_point, contact_point , plane.speed);
+  plane.moving();
+  // plane.auto_landing();
+  console.log(plane.position.x)
 
-  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  onMap.rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane.position.x,plane.position.y)
+  onMap.rotate ( map, -plane.angle.phi)
 }
 function step(timestamp) {
 
@@ -365,7 +416,7 @@ function toggleAnimation(timestamp) {
   } else {
     toggle = false;
     cancelAnimationFrame(stopId);
-    X = plane_obj.position.x;
+    X = plane.position.x;
 
   }
 }
