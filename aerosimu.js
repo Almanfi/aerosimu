@@ -19,9 +19,9 @@ setTimeout(function initialize () {
 
   auto_landing_ON = true;
   loc_scope (800);
-  km_rem(5);
-  placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  rotate ( map, -plane_obj.angle.phi)
+  onMap.km_rem(5);
+  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
+  onMap.rotate ( map, -plane_obj.angle.phi)
   update_indicator (18)
   set_loc_freq (109.7);
 
@@ -65,7 +65,7 @@ setTimeout(function initialize () {
     }
   }
 
-  // km_rem (1);
+  // onMap.km_rem (1);
 
 
 //positioning
@@ -76,7 +76,7 @@ setTimeout(function initialize () {
     var x0 = coordinate[prop].x0;
     var y0 = coordinate[prop].y0;
 
-    placeXY0 (elem,x,y,x0,y0)
+    onMap.placeXY0 (elem,x,y,x0,y0)
   }
 
 }, 500);
@@ -94,8 +94,8 @@ function keyboard (event) {
       plane_obj.position.x -= 0.2;
       event.preventDefault();
   }
-  placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
+  onMap.rotate ( map, -plane_obj.angle.phi)
   update_indicator (18)
 }
 
@@ -203,56 +203,58 @@ function set_loc_freq (freq) {
   }
 }
 
+var onMap = {
+  
+  km_rem (km) {
+    document.documentElement.style.fontSize = 32/km+"px"
+  },
+  px_rem (px) {
+      var rem_unit = getComputedStyle(document.body).fontSize;
+      var rem = px/parseInt(rem_unit);
+      return rem;
+  },
+  
+  
+  size_rem (elem) {
+      var width = elem.getBoundingClientRect().width;
+      var height = elem.getBoundingClientRect().height;
+      
+      return size = {
+        height : onMap.px_rem (height),
+        width : onMap.px_rem (width),
+      }
+  },
+  
+  placeXY0 (elem,x,y,x0,y0) {
+    size_elem = onMap.size_rem (elem);
+    x_pos = x - x0*(size_elem.width)/2;
+    y_pos = y - y0*(size_elem.height)/2;
+    elem.style.position = "relative";
+    elem.style.left = x_pos + "rem";
+    elem.style.top = -y_pos + "rem";
+  },
+  placeXY (elem,x,y) {
+    size_elem = onMap.size_rem (elem);
+    x_pos = x ;
+    y_pos = y ;
+    // x_pos = x - (size_elem.width)/2;
+    // y_pos = y - (size_elem.height)/2;
+    elem.style.position = "relative";
+    elem.style.left = x_pos + "rem";
+    elem.style.top = -y_pos + "rem";
+  },
+  pplaceXY (elem,x,y) {
+    x_pos = x ;
+    y_pos = y ;
+    var parent = elem.parentElement
+    parent.style.left = 50 + x_pos/2 + "%";
+    parent.style.top = 50 - y_pos + "%";
+  },
+  rotate (elem,deg) {
+    elem.style.transform = "onMap.rotate("+deg+"deg)"
+  },
+} 
 
-
-function km_rem (km) {
-  document.documentElement.style.fontSize = 32/km+"px"
-}
-function px_rem (px) {
-    var rem_unit = getComputedStyle(document.body).fontSize;
-    var rem = px/parseInt(rem_unit);
-    return rem;
-}
-
-
-function size_rem (elem) {
-    var width = elem.getBoundingClientRect().width;
-    var height = elem.getBoundingClientRect().height;
-    
-    return size = {
-      height : px_rem (height),
-      width : px_rem (width),
-    }
-}
-
-function placeXY0 (elem,x,y,x0,y0) {
-  size_elem = size_rem (elem);
-  x_pos = x - x0*(size_elem.width)/2;
-  y_pos = y - y0*(size_elem.height)/2;
-  elem.style.position = "relative";
-  elem.style.left = x_pos + "rem";
-  elem.style.top = -y_pos + "rem";
-}
-function placeXY (elem,x,y) {
-  size_elem = size_rem (elem);
-  x_pos = x ;
-  y_pos = y ;
-  // x_pos = x - (size_elem.width)/2;
-  // y_pos = y - (size_elem.height)/2;
-  elem.style.position = "relative";
-  elem.style.left = x_pos + "rem";
-  elem.style.top = -y_pos + "rem";
-}
-function pplaceXY (elem,x,y) {
-  x_pos = x ;
-  y_pos = y ;
-  var parent = elem.parentElement
-  parent.style.left = 50 + x_pos/2 + "%";
-  parent.style.top = 50 - y_pos + "%";
-}
-function rotate (elem,deg) {
-  elem.style.transform = "rotate("+deg+"deg)"
-}
 
 
 let start, previousTimeStamp;
@@ -330,8 +332,8 @@ function anim () {
   
   plane_landing (stop_point, contact_point , plane_obj.speed);
 
-  placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
+  onMap.rotate ( map, -plane_obj.angle.phi)
 }
 function step(timestamp) {
 
