@@ -157,7 +157,7 @@ function loc_scope (height) {
   triangle_2.style.borderBottom = height + "rem solid rgb(0, 255, 115)";
 }
 
-var X = plane_obj.position.x;
+var X;
 
 function auto_landing () {
 
@@ -255,23 +255,40 @@ var onMap = {
   },
 } 
 
-
-
 let start, previousTimeStamp;
-var ms = 0 ,distance = plane_obj.position.y;
-var max_time = 120000;
-var speed = 0.05;
-var ang = 0 ;
-var i =0, j=0;
-var step_time = 16.66;
+var ms, distance;
+var max_time;
+var speed;
+var ang;
+var i, j;
+var step_time;
 var dx;
-var contact_point = 80;
-var stop_point = 323;
-const max_speed = plane_obj.speed;
-
+var contact_point;
+var stop_point;
+var max_speed;
 
 var SPEED_ON_CONTACT, TIME_OF_CONTACT, slow_factor, slow_rate ;
-var final_speed = 0.005;
+var final_speed;
+function init () {
+  ms = 0;
+  distance = plane_obj.position.y;
+  max_time = 120000;
+  speed = 0.05;
+  ang = 0 ;
+  i =0, j=0;
+  step_time = 16.66;
+  contact_point = 80;
+  stop_point = 323;
+  max_speed = plane_obj.speed;
+  
+
+  final_speed = 0.005;
+
+  X = plane_obj.position.x;
+}
+
+init ();
+
 
 function plane_slowing (final_speed) {
   let slow_speed;
