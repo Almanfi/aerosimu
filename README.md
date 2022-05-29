@@ -1,4 +1,4 @@
 # aerosimu
 auto_flare simulation
 
-preview : https://almanfi.github.io/aerosimu/aerosimu.html
+preview : <a href="https://almanfi.github.io/aerosimu/aerosimu.html">https://almanfi.github.io/aerosimu/aerosimu.html</a>
