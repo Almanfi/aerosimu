@@ -137,17 +137,21 @@ body{
 
 }
 
-.auto_landing {
+.low-pannel {
     height: 1rem;
     top: 80%;
     right: -80%;
     position : relative;
     font-size: 3rem;
     text-align: center;
-}.auto_landing > div {
+}.auto_landing {
     width: 12vh;
     /* height: 5vh; */
     background-color: green;
+}.restart {
+    width: 12vh;
+    /* height: 5vh; */
+    background-color: teal;
 }
 
 .loc-freq * {
