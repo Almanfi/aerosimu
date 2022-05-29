@@ -72,7 +72,7 @@ function init () {
   plane = {
     position : {
         x : 20,
-        y : 300,
+        y : 200,
         z : 0
     },
     angle : {
@@ -80,7 +80,7 @@ function init () {
         theta : 0,
         alpha : 0
     },
-    speed : 0.02,
+    speed : 0.05,
     fuel : 0.5,
     alert : false,
     max_phi : 1,
@@ -108,14 +108,33 @@ function init () {
     },
     auto_landing () {
       currentX = plane.position.x;
+      var angle_per_speed = 0.75;
       let distanceX = lastX - currentX;
       if (-plane.position.x < 0) {
-        if (distanceX>0) {
-            plane.angle.phi -= 0.1;
-            console.log("hey ",plane.angle.phi)
-          }
+      //   if (-plane.position.x < -15) {
+      //     console.log("it is ");
+      //   }else if (-plane.position.x < -10) {
+      //     console.log("it is 2");
+      //   }else if (-plane.position.x < -5) {
+      //   console.log("it is 3");
+      // }
+        if (plane.angle.phi> 1) {
+            plane.turn_left(angle_per_speed * plane.speed);
+            console.log("hey1 ",plane.angle.phi,-plane.position.x )
+        }else if (plane.angle.phi > -2 & (-plane.position.x) > 3){
+          plane.angle.phi /= 1.2;
+          console.log("hey3 ",plane.angle.phi,-plane.position.x )
+        }
+      }else {
+        if (plane.angle.phi< -2) {
+            plane.turn_right(angle_per_speed * plane.speed);
+            console.log("hey2 ",plane.angle.phi)
+        }else if (plane.angle.phi < 2 & (-plane.position.x) < 3){
+          plane.angle.phi /= 1.2;
+          console.log("hey4 ",plane.angle.phi,-plane.position.x )
+        }
       }
-
+      if (Math.abs(plane.angle.phi) < 0.001) plane.angle.phi = 0;
       lastX = currentX;
     }
 }
@@ -365,7 +384,7 @@ function anim () {
   
   // plane_landing (stop_point, contact_point , plane.speed);
   plane.moving();
-  // plane.auto_landing();
+  plane.auto_landing();
   // console.log(plane.position.x)
 
   onMap.placeXY (map,plane.position.x,plane.position.y)
