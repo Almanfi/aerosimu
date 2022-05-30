@@ -4,6 +4,10 @@ setTimeout(function initialize () {
   map    = document.querySelector("div.map");
   loc    = document.querySelector("div.loc");
   plane_div  =  document.querySelector("div.plane");
+  plane_side_div  =  document.querySelector("div.plane-side");
+  // onMap.placeXY(plane_side_div,-2,19.5)
+  // onMap.pplaceXY(plane_side_div,80,-16)
+  
   indicatorX  =  document.querySelector("div.indicatorX");
   loc_freq  =  document.querySelector("div.loc-freq > input")
   
@@ -72,7 +76,7 @@ function init () {
   plane = {
     position : {
         x : 20,
-        y : 200,
+        y : 1083,
         z : 0
     },
     angle : {
@@ -81,7 +85,7 @@ function init () {
         alpha : 0
     },
     speed : 0.05,
-    fuel : 0.5,
+    fuel : 0.7,
     alert : false,
     max_phi : 1,
     max_theta : 1,
@@ -324,6 +328,7 @@ var max_speed;
 var indicatorX_pos = 9;
 var lastX;
 var currentX;
+var Z_side;
 
 var SPEED_ON_CONTACT, TIME_OF_CONTACT, slow_factor, slow_rate ;
 var final_speed;
@@ -388,6 +393,8 @@ function anim () {
   // console.log(plane.position.x)
 
   onMap.placeXY (map,plane.position.x,plane.position.y)
+  if (plane.position.y > -70 ) {Z_side =  -15 +plane.position.y * 16/1153}
+  onMap.pplaceXY (plane_side_div,75 -plane.position.y * 80/1153,Z_side)
   onMap.rotate ( plane_div, plane.angle.phi)
 }
 function step(timestamp) {
