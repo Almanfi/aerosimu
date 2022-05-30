@@ -12,7 +12,7 @@ setTimeout(function initialize () {
   loc_freq  =  document.querySelector("div.loc-freq > input")
   
 
-  auto_landing_Btn  =  document.querySelector("div.auto_landing > div");
+  auto_landing_Btn  =  document.querySelector("div.auto_landing");
   
 
   document.addEventListener("keydown", keyboard);
@@ -111,35 +111,37 @@ function init () {
       }
     },
     auto_landing () {
-      currentX = plane.position.x;
-      var angle_per_speed = 0.75;
-      let distanceX = lastX - currentX;
-      if (-plane.position.x < 0) {
-      //   if (-plane.position.x < -15) {
-      //     console.log("it is ");
-      //   }else if (-plane.position.x < -10) {
-      //     console.log("it is 2");
-      //   }else if (-plane.position.x < -5) {
-      //   console.log("it is 3");
-      // }
-        if (plane.angle.phi> 1) {
-            plane.turn_left(angle_per_speed * plane.speed);
-            console.log("hey1 ",plane.angle.phi,-plane.position.x )
-        }else if (plane.angle.phi > -2 & (-plane.position.x) > 3){
-          plane.angle.phi /= 1.2;
-          console.log("hey3 ",plane.angle.phi,-plane.position.x )
+      if (auto_landing_ON & loc_captured) {
+        currentX = plane.position.x;
+        var angle_per_speed = 0.75;
+        let distanceX = lastX - currentX;
+        if (-plane.position.x < 0) {
+        //   if (-plane.position.x < -15) {
+        //     console.log("it is ");
+        //   }else if (-plane.position.x < -10) {
+        //     console.log("it is 2");
+        //   }else if (-plane.position.x < -5) {
+        //   console.log("it is 3");
+        // }
+          if (plane.angle.phi> 1) {
+              plane.turn_left(angle_per_speed * plane.speed);
+              console.log("hey1 ",plane.angle.phi,-plane.position.x )
+          }else if (plane.angle.phi > -2 & (-plane.position.x) > 3){
+            plane.angle.phi /= 1.2;
+            console.log("hey3 ",plane.angle.phi,-plane.position.x )
+          }
+        }else {
+          if (plane.angle.phi< -2) {
+              plane.turn_right(angle_per_speed * plane.speed);
+              console.log("hey2 ",plane.angle.phi)
+          }else if (plane.angle.phi < 2 & (-plane.position.x) < 3){
+            plane.angle.phi /= 1.2;
+            console.log("hey4 ",plane.angle.phi,-plane.position.x )
+          }
         }
-      }else {
-        if (plane.angle.phi< -2) {
-            plane.turn_right(angle_per_speed * plane.speed);
-            console.log("hey2 ",plane.angle.phi)
-        }else if (plane.angle.phi < 2 & (-plane.position.x) < 3){
-          plane.angle.phi /= 1.2;
-          console.log("hey4 ",plane.angle.phi,-plane.position.x )
-        }
+        if (Math.abs(plane.angle.phi) < 0.001) plane.angle.phi = 0;
+        lastX = currentX;
       }
-      if (Math.abs(plane.angle.phi) < 0.001) plane.angle.phi = 0;
-      lastX = currentX;
     }
 }
   ms = 0;
@@ -394,7 +396,7 @@ function anim () {
 
   onMap.placeXY (map,plane.position.x,plane.position.y)
   if (plane.position.y > -70 ) {Z_side =  -15 +plane.position.y * 16/1153}
-  onMap.pplaceXY (plane_side_div,75 -plane.position.y * 80/1153,Z_side)
+  onMap.pplaceXY (plane_side_div,55 -plane.position.y * 58/1153,Z_side)
   onMap.rotate ( plane_div, plane.angle.phi)
 }
 function step(timestamp) {
