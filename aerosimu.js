@@ -75,7 +75,7 @@ function init () {
 
   plane = {
     position : {
-        x : 60,
+        x : 40,
         y : 500,
         // y : 1083,
         z : 0
