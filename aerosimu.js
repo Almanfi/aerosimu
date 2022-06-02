@@ -1,4 +1,6 @@
-setTimeout(function initialize () {
+document.addEventListener('DOMContentLoaded', initialize)
+
+function initialize () {
   place_holder = document.querySelector("#place-holder");
   line   = document.querySelector("div.line.bg-blue");
   map    = document.querySelector("div.map");
@@ -56,7 +58,6 @@ setTimeout(function initialize () {
     }
   }
 
-
 //positioning
   for (const prop in coordinate) {
     var elem = coordinate[prop].elem;
@@ -68,7 +69,7 @@ setTimeout(function initialize () {
     onMap.placeXY0 (elem,x,y,x0,y0)
   }
 
-}, 500);
+}
 
 var k=0;
 function init () {
@@ -246,9 +247,6 @@ function loc_scope (height) {
   triangle_1.style.borderBottom = height + "rem solid rgb(0, 162, 255)";
   triangle_2.style.borderBottom = height + "rem solid rgb(0, 255, 115)";
 }
-
-var X;
-
 
 function update_indicator (X_max) {
   if (plane.position.x > X_max) {
