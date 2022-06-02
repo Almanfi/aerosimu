@@ -103,9 +103,7 @@ body{
 /* ----------------------------------objects---------------------------------- */
 .plane {
     position: relative;
-    height: 5rem;
-    /* border: 0.01em solid white; */
-    filter: invert();
+    height: 4rem;
 }
 .line {
     height: 100vh;
