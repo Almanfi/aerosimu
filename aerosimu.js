@@ -71,19 +71,18 @@ function initialize () {
 
 }
 
-var k=0;
 function init () {
 
   plane = {
     position : {
-        x : -360,
-        y : 1200+340,
+        x : -80,
+        y : 800,
         // y : 1083,
         z : 0
     },
     angle : {
         phi : {
-          d : -40,
+          d : -10,
           max : 3,
           optim : 2,
         },
@@ -116,8 +115,8 @@ function init () {
         if (SPEED_ON_CONTACT === undefined) {
           SPEED_ON_CONTACT = plane.speed;
           TIME_OF_CONTACT = ms;
-          slow_factor = 10;
-          slow_rate = Math.log(slow_factor*SPEED_ON_CONTACT/0.01) + 1;
+          slow_factor = 80;
+          slow_rate = Math.log(slow_factor*SPEED_ON_CONTACT) + 1;
         }
       
         let t = (ms - TIME_OF_CONTACT)/step_time
@@ -127,7 +126,7 @@ function init () {
       } else {
         slow_speed = final_speed;
       }
-      console.log(slow_speed+ " **" + final_speed)
+      // console.log(slow_speed+ " **" + final_speed)
       return slow_speed;
     },
     parking () {
@@ -143,41 +142,33 @@ function init () {
         onMap.rotate(plane_div,plane.angle.phi.d)
     },
     landing () {
-      if (-plane.position.y < stop_point) {
+      let Y_map = -plane.position.y;
+
+        // if (Y_map < stop_point) {
+          if (Y_map > contact_point) { 
+            plane.speed = plane.slowing (final_speed);
+          }
+        // }
         plane.moving();
-      }else {
-        plane.parking ();
-        plane.moving();
-      }
     },
     auto_landing () {
       if (X_of_phi === undefined) {
         rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
         X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180)) ;
-        // function correct_X_of_phi () {
-        //   if (plane.position.x > 0) {
-        //     X_of_phi += 37.189 * plane.speed;
-        //   } else {
-        //     X_of_phi -= 37.189 * plane.speed;
-        //   }
-        // }
-        // correct_X_of_phi ();
       }
       if ( Math.abs(plane.position.x)  < X_of_phi ) {
         if (plane.angle.phi.d > 0) { 
-          k++;
-          console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
+          // console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
           plane.turn_left(plane.angle.phi.optim*step_time/1000)
           if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
         }
         if (plane.angle.phi.d < 0) {
-          console.log("2     "+plane.position.x +"   "+plane.angle.phi.d)
           plane.turn_right(plane.angle.phi.optim*step_time/1000)
           if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
         }
       }
       
-    },
+    }
 }
   ms = 0;
   distance = plane.position.y;
@@ -191,7 +182,7 @@ function init () {
   max_speed = plane.speed;
   
 
-  final_speed = 0.005;
+  final_speed = 5;
 
   X = plane.position.x;
   
@@ -354,7 +345,6 @@ var final_speed;
 function plane_landing (stop_point, contact_point , speed) {
   if (-plane.position.y < contact_point) {
     dx = speed * step_time
-
   }else{
     if (-plane.position.y < stop_point) {
       
