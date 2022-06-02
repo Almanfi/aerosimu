@@ -70,19 +70,19 @@ setTimeout(function initialize () {
 
 }, 500);
 
-
+var k=0;
 function init () {
 
   plane = {
     position : {
-        x : 60,
-        y : 500,
+        x : -360,
+        y : 1200+340,
         // y : 1083,
         z : 0
     },
     angle : {
         phi : {
-          d : 10.65,
+          d : -40,
           max : 3,
           optim : 2,
         },
@@ -97,7 +97,7 @@ function init () {
           optim : 2,
         },
     },
-    speed : 80,
+    speed : 50,
     fuel : 0.7,
     alert : false,
     turn_left(angle)  {
@@ -152,7 +152,7 @@ function init () {
     auto_landing () {
       if (X_of_phi === undefined) {
         rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
-        X_of_phi = rho * Math.sin(plane.angle.phi.d*Math.PI/180);
+        X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180)) ;
         // function correct_X_of_phi () {
         //   if (plane.position.x > 0) {
         //     X_of_phi += 37.189 * plane.speed;
@@ -162,15 +162,15 @@ function init () {
         // }
         // correct_X_of_phi ();
       }
-      if (plane.position.x < X_of_phi ) {
+      if ( Math.abs(plane.position.x)  < X_of_phi ) {
         if (plane.angle.phi.d > 0) { 
-          console.log("1     "+plane.position.x +"   "+plane.angle.phi.d)
+          k++;
+          console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
           plane.turn_left(plane.angle.phi.optim*step_time/1000)
           if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
         }
-      }else if (plane.position.x > X_of_phi ) {
-        console.log("2     "+plane.position.x +"   "+plane.angle.phi.d)
         if (plane.angle.phi.d < 0) {
+          console.log("2     "+plane.position.x +"   "+plane.angle.phi.d)
           plane.turn_right(plane.angle.phi.optim*step_time/1000)
           if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
         }
