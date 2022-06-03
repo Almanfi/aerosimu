@@ -75,14 +75,14 @@ function init () {
 
   plane = {
     position : {
-        x : -80,
-        y : 800,
+        x : -0,
+        y : -50,
         // y : 1083,
         z : 0
     },
     angle : {
         phi : {
-          d : -10,
+          d : -0,
           max : 3,
           optim : 2,
         },
@@ -97,7 +97,7 @@ function init () {
           optim : 2,
         },
     },
-    speed : 50,
+    speed : 80,
     fuel : 0.7,
     alert : false,
     turn_left(angle)  {
@@ -115,7 +115,7 @@ function init () {
         if (SPEED_ON_CONTACT === undefined) {
           SPEED_ON_CONTACT = plane.speed;
           TIME_OF_CONTACT = ms;
-          slow_factor = 80;
+          slow_factor = 10;
           slow_rate = Math.log(slow_factor*SPEED_ON_CONTACT) + 1;
         }
       
@@ -124,17 +124,43 @@ function init () {
         
         slow_speed = SPEED_ON_CONTACT * (1 + 0.0145*x - 0.003475*x*x + 0.0000885*x*x*x  - 0.000000655*x*x*x*x ) + final_speed;
       } else {
+        SPEED_ON_CONTACT = undefined;
         slow_speed = final_speed;
       }
       // console.log(slow_speed+ " **" + final_speed)
       return slow_speed;
     },
     parking () {
-      plane.speed = 10;
+      auto_landing_ON = false;
+      // plane.speed = plane.slowing (1);
+      plane.speed = 2;
+      if (plane.position.x > -19.5  & -plane.position.y > stop_point) {
+        if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
+      }
+      if (plane.position.x < -19.5  & plane.position.y > -332) {
+        if (plane.angle.phi.d > 0) {
+              plane.turn_left(45*step_time/1000);
+            }else {plane.angle.phi.d = 0} 
+          }
+      if (plane.position.x < -19.5 & plane.position.y < -332  & plane.position.y < -335 - 5.3 * 0) {
+        if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
+      }
+      if (plane.position.x < -33) {
+        plane.speed = 0;
+      }
+      // else {
+      //   console.log("turn left")
+      //   if (plane.angle.phi.d > 0) {
+      //     plane.turn_left(45*step_time/1000);
+      //   }else {plane.angle.phi.d = 0}
+      // }
+      // if (plane.position.y < -335) {
+      //   if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
+      // }
 
     },
     moving () {
-      var r = plane.speed * step_time/1000
+      var r = plane.speed * step_time/1000;
         dx = Math.sin(plane.angle.phi.d*Math.PI/180) * r;
         dy = Math.cos(plane.angle.phi.d*Math.PI/180) * r;
         plane.position.y -= dy;
@@ -149,25 +175,30 @@ function init () {
             plane.speed = plane.slowing (final_speed);
           }
         // }
+        if (Y_map > stop_point) {
+          plane.parking ();
+        }
+
         plane.moving();
     },
     auto_landing () {
-      if (X_of_phi === undefined) {
-        rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
-        X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180)) ;
-      }
-      if ( Math.abs(plane.position.x)  < X_of_phi ) {
-        if (plane.angle.phi.d > 0) { 
-          // console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
-          plane.turn_left(plane.angle.phi.optim*step_time/1000)
-          if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+      if (auto_landing_ON & loc_captured) {
+        if (X_of_phi === undefined) {
+          rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
+          X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180)) ;
         }
-        if (plane.angle.phi.d < 0) {
-          plane.turn_right(plane.angle.phi.optim*step_time/1000)
-          if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+        if ( Math.abs(plane.position.x)  < X_of_phi ) {
+          if (plane.angle.phi.d > 0) { 
+            // console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
+            plane.turn_left(plane.angle.phi.optim*step_time/1000)
+            if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+          }
+          if (plane.angle.phi.d < 0) {
+            plane.turn_right(plane.angle.phi.optim*step_time/1000)
+            if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+          }
         }
       }
-      
     }
 }
   ms = 0;
@@ -178,7 +209,7 @@ function init () {
   i =0, j=0;
   step_time = 16.66;
   contact_point = 80;
-  stop_point = 310;
+  stop_point = 326;
   max_speed = plane.speed;
   
 
@@ -340,30 +371,6 @@ var X_of_phi;
 var SPEED_ON_CONTACT, TIME_OF_CONTACT, slow_factor, slow_rate ;
 var final_speed;
 
-
-
-function plane_landing (stop_point, contact_point , speed) {
-  if (-plane.position.y < contact_point) {
-    dx = speed * step_time
-  }else{
-    if (-plane.position.y < stop_point) {
-      
-      plane.speed = plane_slowing (final_speed);
-      
-
-      dx = plane.speed * step_time
-
-
-    }else{
-      console.log("stoped  " + plane.position.y )
-    }
-  }
-  if (-plane.position.y < stop_point) {
-
-    plane.position.y -= dx;
-    
-  }
-}
 
 function anim () {
 
