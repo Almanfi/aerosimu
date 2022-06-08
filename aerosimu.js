@@ -213,7 +213,7 @@ function init () {
   max_speed = plane.speed;
   
 
-  final_speed = 3;
+  final_speed = 5;
 
   X = plane.position.x;
   
