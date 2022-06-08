@@ -97,7 +97,7 @@ function init () {
           optim : 2,
         },
     },
-    speed : 80,
+    speed : 50,
     fuel : 0.7,
     alert : false,
     turn_left(angle)  {
@@ -133,7 +133,7 @@ function init () {
     parking () {
       auto_landing_ON = false;
       // plane.speed = plane.slowing (1);
-      plane.speed = 2;
+      plane.speed = 1;
       if (plane.position.x > -19.5  & -plane.position.y > stop_point) {
         if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
       }
@@ -213,7 +213,7 @@ function init () {
   max_speed = plane.speed;
   
 
-  final_speed = 5;
+  final_speed = 3;
 
   X = plane.position.x;
   
