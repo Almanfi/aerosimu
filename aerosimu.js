@@ -135,15 +135,15 @@ function init () {
       // plane.speed = plane.slowing (1);
       plane.speed = 1;
       if (plane.position.x > -19.5  & -plane.position.y > stop_point) {
-        if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
+        if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
       }
       if (plane.position.x < -19.5  & plane.position.y > -332) {
         if (plane.angle.phi.d > 0) {
-              plane.turn_left(45*step_time/1000);
+              plane.turn_left(20*step_time/1000);
             }else {plane.angle.phi.d = 0} 
           }
       if (plane.position.x < -19.5 & plane.position.y < -332  & plane.position.y < -335 - 5.3 * 0) {
-        if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
+        if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
       }
       if (plane.position.x < -33) {
         plane.speed = 0;
