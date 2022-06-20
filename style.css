@@ -85,6 +85,17 @@ body{
     position: relative;
     height: 4rem;
 }
+.plane1 {
+    position: relative;
+    height: 4rem;
+    transform: rotate(87.3319deg);
+    position: relative;
+    left: 33.57rem;
+    top: -337.6rem;
+}
+.hide {
+    display: none;
+}
 .line {
     height: 100vh;
     width: 0.05rem;

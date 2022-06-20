@@ -6,6 +6,7 @@ function initialize () {
   map    = document.querySelector("div.map");
   loc    = document.querySelector("div.loc");
   plane_div  =  document.querySelector("div.plane");
+  plane1_div  =  document.querySelector("div.plane1");
   plane_side_div  =  document.querySelector("div.plane-side");
   
   indicatorX  =  document.querySelector("div.indicatorX");
@@ -130,17 +131,26 @@ function init () {
       plane.speed = 1;
       if (plane.position.x > -19.5  & -plane.position.y > stop_point) {
         if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
+        console.log("phase1    ", plane.position.x,"   ",-plane.position.y);
       }
       if (plane.position.x < -19.5  & plane.position.y > -332) {
+        console.log("phase2");
         if (plane.angle.phi.d > 0) {
-              plane.turn_left(20*step_time/1000);
-            }else {plane.angle.phi.d = 0} 
-          }
-      if (plane.position.x < -19.5 & plane.position.y < -332  & plane.position.y < -335 - 5.3 * 0) {
-        if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
+          plane.turn_left(20*step_time/1000);
+        }else {plane.angle.phi.d = 0} 
       }
-      if (plane.position.x < -33) {
-        plane.speed = 0;
+      if (plane.position.x > -33) {
+        
+        if (plane.position.x < -19.5 & plane.position.y < -332  & plane.position.y < -335 - 5.3 * 0) {
+          console.log("phase3");
+          if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
+        }
+      } else {
+          console.log("phase_stop");
+          plane.speed = 0;
+          document.querySelector(".plane1").className = "plane1"
+          spot_empty = false;
+          setTimeout(init, 2000);
       }
     },
     moving () {
@@ -158,7 +168,13 @@ function init () {
           plane.speed = plane.slowing (final_speed);
         }
         if (Y_map > stop_point) {
-          plane.parking ();
+          if (spot_empty){
+            console.log("parking")
+            plane.parking ();
+          }else
+          {
+            plane.speed = 0;
+          }
         }
         plane.moving();
     },
@@ -191,6 +207,7 @@ function init () {
   contact_point = 80;
   stop_point = 326;
   max_speed = plane.speed;
+  auto_landing_ON = true;
   
 
   final_speed = 5;
@@ -324,6 +341,7 @@ var coordinate;
 var toggle = false;
 var auto_landing_ON = true;
 var loc_captured = true;
+var spot_empty = true;
 let start, previousTimeStamp;
 var ms, distance;
 var max_time;
