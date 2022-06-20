@@ -73,9 +73,8 @@ function init () {
 
   plane = {
     position : {
-        x : -0,
-        y : -50,
-        // y : 1083,
+        x : 20,
+        y : 500,
         z : 0
     },
     angle : {
@@ -96,7 +95,6 @@ function init () {
         },
     },
     speed : 50,
-    fuel : 0.7,
     alert : false,
     turn_left(angle)  {
       plane.angle.phi.d -= angle;
@@ -156,15 +154,12 @@ function init () {
     landing () {
       let Y_map = -plane.position.y;
 
-        // if (Y_map < stop_point) {
-          if (Y_map > contact_point) { 
-            plane.speed = plane.slowing (final_speed);
-          }
-        // }
+        if (Y_map > contact_point) { 
+          plane.speed = plane.slowing (final_speed);
+        }
         if (Y_map > stop_point) {
           plane.parking ();
         }
-
         plane.moving();
     },
     auto_landing () {
@@ -227,7 +222,6 @@ function keyboard (event) {
   update_indicator (18)
 }
 
-
 function toggleAutoLanding() {
   if (!auto_landing_ON) {
     auto_landing_ON = true;
@@ -255,20 +249,8 @@ function loc_scope (height) {
   triangle_2.style.borderBottom = height + "rem solid rgb(0, 255, 115)";
 }
 
-function update_indicator (X_max) {
-  if (plane.position.x > X_max) {
-    indicatorX.style.display = "none";
-  }else{
-    indicatorX_pos = plane.position.x*9/X_max
-
-    indicatorX.style.display = "";
-    indicatorX.style.transform = "translateX("+ indicatorX_pos +"vh)"
-  }
-
-}
-
 function set_loc_freq (freq) {
-
+  
   if (loc_freq.value == freq) {
     loc.style.display = "";
     loc_captured = true;
@@ -278,8 +260,18 @@ function set_loc_freq (freq) {
   }
 }
 
+function update_indicator (X_max) {
+  if (plane.position.x > X_max) {
+    indicatorX.style.display = "none";
+  }else{
+    indicatorX_pos = plane.position.x*9/X_max
+
+    indicatorX.style.display = "";
+    indicatorX.style.transform = "translateX("+ indicatorX_pos +"vh)"
+  }
+}
+
 var onMap = {
-  
   km_rem (km) {
     document.documentElement.style.fontSize = 32/km+"px"
   },
@@ -288,12 +280,9 @@ var onMap = {
       var rem = px/parseInt(rem_unit);
       return rem;
   },
-  
-  
   size_rem (elem) {
       var width = elem.getBoundingClientRect().width;
       var height = elem.getBoundingClientRect().height;
-      
       return size = {
         height : onMap.px_rem (height),
         width : onMap.px_rem (width),
@@ -358,7 +347,7 @@ var final_speed;
 
 
 function anim () {
-
+  
   set_loc_freq (109.7);
   update_indicator (50);
   
