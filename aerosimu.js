@@ -7,8 +7,6 @@ function initialize () {
   loc    = document.querySelector("div.loc");
   plane_div  =  document.querySelector("div.plane");
   plane_side_div  =  document.querySelector("div.plane-side");
-  // onMap.placeXY(plane_side_div,-2,19.5)
-  // onMap.pplaceXY(plane_side_div,80,-16)
   
   indicatorX  =  document.querySelector("div.indicatorX");
   loc_freq  =  document.querySelector("div.loc-freq > input")
@@ -127,12 +125,10 @@ function init () {
         SPEED_ON_CONTACT = undefined;
         slow_speed = final_speed;
       }
-      // console.log(slow_speed+ " **" + final_speed)
       return slow_speed;
     },
     parking () {
       auto_landing_ON = false;
-      // plane.speed = plane.slowing (1);
       plane.speed = 1;
       if (plane.position.x > -19.5  & -plane.position.y > stop_point) {
         if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
@@ -148,16 +144,6 @@ function init () {
       if (plane.position.x < -33) {
         plane.speed = 0;
       }
-      // else {
-      //   console.log("turn left")
-      //   if (plane.angle.phi.d > 0) {
-      //     plane.turn_left(45*step_time/1000);
-      //   }else {plane.angle.phi.d = 0}
-      // }
-      // if (plane.position.y < -335) {
-      //   if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
-      // }
-
     },
     moving () {
       var r = plane.speed * step_time/1000;
@@ -189,7 +175,6 @@ function init () {
         }
         if ( Math.abs(plane.position.x)  < X_of_phi ) {
           if (plane.angle.phi.d > 0) { 
-            // console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
             plane.turn_left(plane.angle.phi.optim*step_time/1000)
             if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
           }
@@ -396,7 +381,6 @@ function step(timestamp) {
     if (i >1) {
       
       if (timestamp - previousTimeStamp < 100) { step_time = timestamp - previousTimeStamp } // prevent step_time growing case of stoping animation
-      // console.log(step_time)
       ms = i * step_time
     }
     anim();
