@@ -76,10 +76,29 @@
                 
                 <div class="lost loc-main no_margine_3vh -loc-freq">
                     <div class="loc-freq">
-                        <p>LOC Freq</p>
-                        <input type="text" size="3" value="109.7" onchange="set_loc_freq (109.7)">
+                        <p>LOC Freq (MHz)</p>
+                        <input type="text" size="3" value="109.7" onchange="set_loc_freq(109.7)"> 
                     </div>
-
+                    <div class="gp-freq">
+                        <p>GP Freq (KHz)</p>
+                        <input type="text" size="3" value="333.2" onchange="set_GP_freq(333.2)">
+                    </div>
+                    <div class="plane-pos">
+                        <p>plane initial position(x, y, z)</p>
+                        <input type="text" size="7" value="50, 500, 0">
+                    </div>
+                    <div class="plane-sys">
+                        <div class="lost pannel-main no_margine_3vh">
+                           <div class="pannel">
+                                 <div class="auto_landing" onclick="toggleAutoLanding()">auto-flare</div>
+                                <div class="restart" onclick="init()">restart</div>
+                           </div>
+                        </div>
+                    </div>
+                    <!-- <div class="plane-angle">
+                        <p>plane angle (deg)</p>
+                        <input type="text" size="3" value="8">
+                    </div> -->
                 </div>
 
                 <div class="lost main-pfd -pfd">
@@ -96,13 +115,6 @@
                 
             </div>
 
-            <div class="lost pannel-main no_margine_3vh">
-                <div class="pannel">
-                    <div class="auto_landing" onclick="toggleAutoLanding()">auto-flare</div>
-                    <div class="restart" onclick="init()">restart</div>
-                </div>
-
-            </div>
 
         </div>
 

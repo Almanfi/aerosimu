@@ -57,7 +57,7 @@ body{
     transform: rotate(2deg);
 }
 .tria2 {
-    border-bottom: 400rem solid rgb(0, 255, 115);
+    border-bottom: 400rem solid rgb(196, 13, 37);
     transform: rotate(-2deg);
 }
 
@@ -164,12 +164,13 @@ body{
 }
 
 .pannel-main {
-    top: 96.5%;
-    left: 96%;
+    top: 120%;
+    left: 50%;
 }
 .auto_landing {
     width: 12vh;
     background-color: green;
+    left: 50%;
 }.restart {
     width: 12vh;
     background-color: teal;

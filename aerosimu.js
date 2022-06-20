@@ -10,8 +10,11 @@ function initialize () {
   plane_side_div  =  document.querySelector("div.plane-side");
   
   indicatorX  =  document.querySelector("div.indicatorX");
-  loc_freq  =  document.querySelector("div.loc-freq > input")
-  
+  loc_freq    =  document.querySelector("div.loc-freq > input");
+  GP_freq     =  document.querySelector("div.gp-freq > input");
+  plane_pos   =  document.querySelector("div.plane-pos > input");
+  plane_angle =  document.querySelector("div.plane-angle > input");
+
 
   auto_landing_Btn  =  document.querySelector("div.auto_landing");
   
@@ -213,10 +216,16 @@ function init () {
   final_speed = 5;
 
   X = plane.position.x;
-  
 
-lastX = plane.position.x+1;
-currentX = plane.position.x;
+  lastX = plane.position.x+1;
+  currentX = plane.position.x;
+
+  plane_pos   =  document.querySelector("div.plane-pos > input");
+  plane_angle =  document.querySelector("div.plane-angle > input");
+  if (plane_pos)
+  {
+    set_init_pos_angle();
+  }
 }
 
 init ();
@@ -275,6 +284,12 @@ function set_loc_freq (freq) {
     loc.style.display = "none";
     loc_captured = false;
   }
+}
+function set_init_pos_angle() {
+  plane.position.x    = parseInt(plane_pos.value.split(',')[0]);
+  plane.position.y    = parseInt(plane_pos.value.split(',')[1]);
+  plane.position.z    = parseInt(plane_pos.value.split(',')[2]);
+  // plane.angle.phi.d   = parseInt(plane_angle.value);
 }
 
 function update_indicator (X_max) {
