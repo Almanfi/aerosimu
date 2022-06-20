@@ -31,6 +31,10 @@ body{
     position: relative;
     top: 50%;
 }
+.control-container {
+    height: 100vh;
+    position: relative;
+}
 /* .grid-center {
     grid-column: 1 / 4;
     grid-row: 1 / 4;
@@ -99,9 +103,7 @@ body{
 /* ----------------------------------objects---------------------------------- */
 .plane {
     position: relative;
-    height: 5rem;
-    /* border: 0.01em solid white; */
-    filter: invert();
+    height: 4rem;
 }
 .line {
     height: 100vh;
@@ -124,7 +126,27 @@ body{
     top: -108rem;
     transform: rotate(-0.1deg);
 }
+.mapFAP {
+    opacity: 0.5;
+    left: -10.3%;
+    position: relative;
+    height: 1852rem;
+    top: 368rem;
+    transform: rotate(-0.1deg);
+}
 
+.main-pfd {
+    top: 80%;
+    left: 26%;
+}
+.plane-side {
+    position: absolute;
+    top: -39.8vh;
+    left: -13vh;
+    /* y = 1083 at this possition */
+}.plane-side img {
+    height: 8vh;
+}
 .pfd {
     height: 40vh;
     transform: translate(5.7%, 3%);
@@ -137,26 +159,37 @@ body{
 
 }
 
-.auto_landing {
-    height: 1rem;
-    top: 80%;
-    right: -80%;
-    position : relative;
-    font-size: 3rem;
-    text-align: center;
-}.auto_landing > div {
-    width: 12vh;
-    /* height: 5vh; */
-    background-color: green;
-}
-
-.loc-freq * {
-    top: -30rem;
-    font-size: 4rem;
-    position: relative;
+.no_margine_3vh * {
+    font-size: 3vh;
     margin: 0;
     text-align: center;
 }
+.side-view-main {
+    top: 20%;
+    left: 50%;
+}
+.side-view-main img {
+    height: 35vh
+}
+
+.pannel-main {
+    top: 96.5%;
+    left: 96%;
+}
+.auto_landing {
+    width: 12vh;
+    /* height: 5vh; */
+    background-color: green;
+}.restart {
+    width: 12vh;
+    /* height: 5vh; */
+    background-color: teal;
+}
+.loc-main {
+    top: 64.5%;
+    left: 68%;
+}
+
 
 
 

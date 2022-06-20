@@ -6,27 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aerosimu</title>
     <link rel="stylesheet" href="style.css">
-    <script src="aerosimu.js"></script>
+    
 </head>
 <body>
     <div class="grid-container">
 
-        
-        
-    
+
         <div class="grid-child purple" onclick="toggleAnimation()">
             <div class="map-container">
                 
                 <div class="lost -map">
                     <div class="map">
 
-                        <div class="lost -runway">
+                        <div class="lost -mapFAP">
+                            <img class="mapFAP" src="./aerosimu/fromFAP.jpg" alt="" srcset="">
+                        </div>
+                        <div class="lost -map">
                             <img class="map" src="./aerosimu/aeroport_map.jpg" alt="" srcset="">
                         </div>
-
-                        <!-- <div class="lost -runway">
-                            <div class="runway bg-black"></div>
+                        <!-- <div class="lost -map25">
+                            <img class="map25" src="./aerosimu/from25NM.jpg" alt="" srcset="">
                         </div> -->
+
                         
                         <div class="lost -loc">
                             <div class="loc">
@@ -69,9 +70,21 @@
         </div>
 
         <div class="grid-child green">
-            <div class="map-container">
+            <div class="control-container">
 
-                <div class="lost -loc-freq">
+                <div class="lost side-view-main no_margine_3vh">
+                    <div class="side-view">
+                        <img src="./aerosimu/side_view.png" alt="">
+                    </div>
+                </div>
+                <div class="lost plane-side-main">
+                    <div class="plane-side">
+                        <img src="./aerosimu/plane_side.png" alt="">
+                    </div>
+                </div>
+                
+
+                <div class="lost loc-main no_margine_3vh -loc-freq">
                     <div class="loc-freq">
                         <p>LOC Freq</p>
                         <input type="text" size="3" value="109.7" onchange="set_loc_freq (109.7)">
@@ -80,7 +93,8 @@
                 </div>
 
 
-                <div class="lost -pfd">
+                <div class="lost main-pfd -pfd">
+
                     <div>
                         <div class="lost -pfd">
                             <img class="pfd" src="./aerosimu/PFD.png" alt="" srcset="">
@@ -92,13 +106,20 @@
                 </div>
                 
             </div>
-            <div class="auto_landing">
-                <div class="-auto_landing" onclick="toggleAutoLanding()">auto-flare</div>
+
+            <div class="lost pannel-main no_margine_3vh">
+                <div class="pannel">
+                    <div class="auto_landing" onclick="toggleAutoLanding()">auto-flare</div>
+                    <div class="restart" onclick="init()">restart</div>
+                </div>
+
             </div>
+
         </div>
 
       
     </div>
+    <script src="aerosimu.js"></script>
 </body>
 </html>
 

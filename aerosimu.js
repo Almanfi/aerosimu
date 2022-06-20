@@ -1,14 +1,20 @@
-setTimeout(function initialize () {
+document.addEventListener('DOMContentLoaded', initialize)
+
+function initialize () {
   place_holder = document.querySelector("#place-holder");
   line   = document.querySelector("div.line.bg-blue");
   map    = document.querySelector("div.map");
   loc    = document.querySelector("div.loc");
-  plane  =  document.querySelector("div.plane");
+  plane_div  =  document.querySelector("div.plane");
+  plane_side_div  =  document.querySelector("div.plane-side");
+  // onMap.placeXY(plane_side_div,-2,19.5)
+  // onMap.pplaceXY(plane_side_div,80,-16)
+  
   indicatorX  =  document.querySelector("div.indicatorX");
   loc_freq  =  document.querySelector("div.loc-freq > input")
   
 
-  auto_landing_Btn  =  document.querySelector("div.auto_landing > div");
+  auto_landing_Btn  =  document.querySelector("div.auto_landing");
   
 
   document.addEventListener("keydown", keyboard);
@@ -16,14 +22,14 @@ setTimeout(function initialize () {
   auto_landing_ON = true;
   loc_scope (800);
   onMap.km_rem(5);
-  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  onMap.rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane.position.x,plane.position.y)
+  onMap.rotate ( plane_div, plane.angle.phi.d)
   update_indicator (18)
   set_loc_freq (109.7);
 
 
   coordinate = {
-    plane_obj : {
+    plane : {
       elem : place_holder,
       x : 0,
       y : 0,
@@ -52,9 +58,6 @@ setTimeout(function initialize () {
     }
   }
 
-  // onMap.km_rem (1);
-
-
 //positioning
   for (const prop in coordinate) {
     var elem = coordinate[prop].elem;
@@ -66,30 +69,180 @@ setTimeout(function initialize () {
     onMap.placeXY0 (elem,x,y,x0,y0)
   }
 
-}, 500);
+}
+
+function init () {
+
+  plane = {
+    position : {
+        x : -0,
+        y : -50,
+        // y : 1083,
+        z : 0
+    },
+    angle : {
+        phi : {
+          d : -0,
+          max : 3,
+          optim : 2,
+        },
+        theta : {
+          d : 0,
+          max : 3,
+          optim : 2,
+        },
+        alpha : {
+          d : 0,
+          max : 3,
+          optim : 2,
+        },
+    },
+    speed : 50,
+    fuel : 0.7,
+    alert : false,
+    turn_left(angle)  {
+      plane.angle.phi.d -= angle;
+        return plane.angle.phi.d
+    },
+    turn_right(angle)  {
+      plane.angle.phi.d += angle;
+        return plane.angle.phi.d
+    },
+    slowing (final_speed) {
+      let slow_speed;
+      if (plane.speed > final_speed) {
+        
+        if (SPEED_ON_CONTACT === undefined) {
+          SPEED_ON_CONTACT = plane.speed;
+          TIME_OF_CONTACT = ms;
+          slow_factor = 10;
+          slow_rate = Math.log(slow_factor*SPEED_ON_CONTACT) + 1;
+        }
+      
+        let t = (ms - TIME_OF_CONTACT)/step_time
+        let x = t/slow_rate;
+        
+        slow_speed = SPEED_ON_CONTACT * (1 + 0.0145*x - 0.003475*x*x + 0.0000885*x*x*x  - 0.000000655*x*x*x*x ) + final_speed;
+      } else {
+        SPEED_ON_CONTACT = undefined;
+        slow_speed = final_speed;
+      }
+      // console.log(slow_speed+ " **" + final_speed)
+      return slow_speed;
+    },
+    parking () {
+      auto_landing_ON = false;
+      // plane.speed = plane.slowing (1);
+      plane.speed = 1;
+      if (plane.position.x > -19.5  & -plane.position.y > stop_point) {
+        if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
+      }
+      if (plane.position.x < -19.5  & plane.position.y > -332) {
+        if (plane.angle.phi.d > 0) {
+              plane.turn_left(20*step_time/1000);
+            }else {plane.angle.phi.d = 0} 
+          }
+      if (plane.position.x < -19.5 & plane.position.y < -332  & plane.position.y < -335 - 5.3 * 0) {
+        if (plane.angle.phi.d < 87) plane.turn_right(20*step_time/1000);
+      }
+      if (plane.position.x < -33) {
+        plane.speed = 0;
+      }
+      // else {
+      //   console.log("turn left")
+      //   if (plane.angle.phi.d > 0) {
+      //     plane.turn_left(45*step_time/1000);
+      //   }else {plane.angle.phi.d = 0}
+      // }
+      // if (plane.position.y < -335) {
+      //   if (plane.angle.phi.d < 87) plane.turn_right(45*step_time/1000);
+      // }
+
+    },
+    moving () {
+      var r = plane.speed * step_time/1000;
+        dx = Math.sin(plane.angle.phi.d*Math.PI/180) * r;
+        dy = Math.cos(plane.angle.phi.d*Math.PI/180) * r;
+        plane.position.y -= dy;
+        plane.position.x -= dx;
+        onMap.rotate(plane_div,plane.angle.phi.d)
+    },
+    landing () {
+      let Y_map = -plane.position.y;
+
+        // if (Y_map < stop_point) {
+          if (Y_map > contact_point) { 
+            plane.speed = plane.slowing (final_speed);
+          }
+        // }
+        if (Y_map > stop_point) {
+          plane.parking ();
+        }
+
+        plane.moving();
+    },
+    auto_landing () {
+      if (auto_landing_ON & loc_captured) {
+        if (X_of_phi === undefined) {
+          rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
+          X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180)) ;
+        }
+        if ( Math.abs(plane.position.x)  < X_of_phi ) {
+          if (plane.angle.phi.d > 0) { 
+            // console.log((plane.angle.phi.optim*step_time/1000 ) + "   1   "+plane.position.x +"   "+plane.angle.phi.d)
+            plane.turn_left(plane.angle.phi.optim*step_time/1000)
+            if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+          }
+          if (plane.angle.phi.d < 0) {
+            plane.turn_right(plane.angle.phi.optim*step_time/1000)
+            if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+          }
+        }
+      }
+    }
+}
+  ms = 0;
+  distance = plane.position.y;
+  max_time = 120000;
+  speed = 0.05;
+  ang = 0 ;
+  i =0, j=0;
+  step_time = 16.66;
+  contact_point = 80;
+  stop_point = 326;
+  max_speed = plane.speed;
+  
+
+  final_speed = 5;
+
+  X = plane.position.x;
+  
+
+lastX = plane.position.x+1;
+currentX = plane.position.x;
+}
+
+init ();
 
 function keyboard (event) {
   if (event.code === "ArrowLeft")
   {
       console.log("left")
-      plane_obj.position.x += 0.2;
+      plane.turn_left(2);
       event.preventDefault();
   }
   if (event.code === "ArrowRight")
   {
       console.log("right")
-      plane_obj.position.x -= 0.2;
+      plane.turn_right(2)
       event.preventDefault();
   }
-  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  onMap.rotate ( map, -plane_obj.angle.phi)
+  onMap.placeXY (map,plane.position.x,plane.position.y)
+  onMap.rotate ( plane_div , plane.angle.phi.d)
   update_indicator (18)
 }
 
-var coordinate;
-var toggle = false;
-var auto_landing_ON = true;
-var loc_captured = true;
+
 function toggleAutoLanding() {
   if (!auto_landing_ON) {
     auto_landing_ON = true;
@@ -99,33 +252,6 @@ function toggleAutoLanding() {
     auto_landing_ON = false;
     auto_landing_Btn.style.backgroundColor = "brown";
   }
-}
-
-
-var plane_obj = {
-    position : {
-        x : 20,
-        y : 100,
-        z : 0
-    },
-    angle : {
-        phi : 0,
-        theta : 0,
-        alpha : 0
-    },
-    speed : 0.05,
-    fuel : 0.5,
-    alert : false,
-    max_phi : 1,
-    max_theta : 1,
-    turn_left()  {
-        plane_obj.angle.phi += plane_obj.max_phi;
-        return plane_obj.angle.phi
-    },
-    turn_right()  {
-        plane_obj.angle.phi -= plane_obj.max_phi;
-        return plane_obj.angle.phi
-    },
 }
 
 function loc_scope (height) {
@@ -144,34 +270,11 @@ function loc_scope (height) {
   triangle_2.style.borderBottom = height + "rem solid rgb(0, 255, 115)";
 }
 
-var X;
-
-function auto_landing () {
-
-  if ( (-plane_obj.position.y  < contact_point) & auto_landing_ON & loc_captured) {
-    
-    if (plane_obj.position.x) {
-      
-      y_to_contact = plane_obj.position.y + contact_point;
-      plane_obj.position.x = X * (Math.exp(-ms/(y_to_contact * 30)))
-      
-    }
-
-    if (-stop_point-plane_obj.position.y < 0){
-      
-      phi_rad = Math.atan(plane_obj.position.x/(Math.abs(-stop_point-plane_obj.position.y)))
-      plane_obj.angle.phi = phi_rad*180/Math.PI;
-    }else{
-      plane_obj.angle.phi = 0; 
-    }
-  }
-}
-
 function update_indicator (X_max) {
-  if (plane_obj.position.x > X_max) {
+  if (plane.position.x > X_max) {
     indicatorX.style.display = "none";
   }else{
-    let indicatorX_pos = plane_obj.position.x*9/X_max
+    indicatorX_pos = plane.position.x*9/X_max
 
     indicatorX.style.display = "";
     indicatorX.style.transform = "translateX("+ indicatorX_pos +"vh)"
@@ -238,10 +341,15 @@ var onMap = {
     parent.style.top = 50 - y_pos + "%";
   },
   rotate (elem,deg) {
-    elem.style.transform = "onMap.rotate("+deg+"deg)"
+    elem.style.transform = "rotate("+deg+"deg)"
   },
 } 
 
+var plane;
+var coordinate;
+var toggle = false;
+var auto_landing_ON = true;
+var loc_captured = true;
 let start, previousTimeStamp;
 var ms, distance;
 var max_time;
@@ -253,91 +361,33 @@ var dx;
 var contact_point;
 var stop_point;
 var max_speed;
+var indicatorX_pos = 9;
+var lastX;
+var currentX;
+var Z_side;
+var rho;
+var X_of_phi;
 
 var SPEED_ON_CONTACT, TIME_OF_CONTACT, slow_factor, slow_rate ;
 var final_speed;
-function init () {
-  ms = 0;
-  distance = plane_obj.position.y;
-  max_time = 120000;
-  speed = 0.05;
-  ang = 0 ;
-  i =0, j=0;
-  step_time = 16.66;
-  contact_point = 80;
-  stop_point = 323;
-  max_speed = plane_obj.speed;
-  
 
-  final_speed = 0.005;
-
-  X = plane_obj.position.x;
-}
-
-init ();
-
-
-function plane_slowing (final_speed) {
-  let slow_speed;
-  if (plane_obj.speed > final_speed) {
-    
-    if (SPEED_ON_CONTACT === undefined) {
-      SPEED_ON_CONTACT = plane_obj.speed;
-      TIME_OF_CONTACT = ms;
-      slow_factor = 10;
-      slow_rate = Math.log(slow_factor*SPEED_ON_CONTACT/0.01) + 1;
-    }
-  
-    let t = (ms - TIME_OF_CONTACT)/step_time
-    let x = t/slow_rate;
-    
-    slow_speed = SPEED_ON_CONTACT * (1 + 0.0145*x - 0.003475*x*x + 0.0000885*x*x*x  - 0.000000655*x*x*x*x ) + final_speed;
-  } else {
-    slow_speed = final_speed;
-  }
-  console.log(slow_speed+ " **" + final_speed)
-  return slow_speed;
-}
-
-function plane_landing (stop_point, contact_point , speed) {
-  if (-plane_obj.position.y < contact_point) {
-    dx = speed * step_time
-
-  }else{
-    if (-plane_obj.position.y < stop_point) {
-      
-      plane_obj.speed = plane_slowing (final_speed);
-      
-
-      dx = plane_obj.speed * step_time
-
-
-    }else{
-      console.log("stoped  " + plane_obj.position.y )
-    }
-  }
-  if (-plane_obj.position.y < stop_point) {
-
-    plane_obj.position.y -= dx;
-    
-  }
-}
 
 function anim () {
-  
-  // console.log(plane_obj.speed , -plane_obj.position.y)
-  
-  
-  set_loc_freq (109.7);
-  
-  auto_landing (auto_landing_ON);
-  
-  update_indicator (18);
-  
-  plane_landing (stop_point, contact_point , plane_obj.speed);
 
-  onMap.placeXY (map,plane_obj.position.x,plane_obj.position.y)
-  onMap.rotate ( map, -plane_obj.angle.phi)
+  set_loc_freq (109.7);
+  update_indicator (50);
+  
+  // auto_landing (auto_landing_ON);
+  
+  // plane_landing (stop_point, contact_point , plane.speed);
+  plane.landing();
+  plane.auto_landing();
+  // console.log(plane.position.x)
+
+  onMap.placeXY (map,plane.position.x,plane.position.y)
+  if (plane.position.y > -70 ) {Z_side =  -15 +plane.position.y * 16/1153}
+  onMap.pplaceXY (plane_side_div,55 -plane.position.y * 58/1153,Z_side)
+  onMap.rotate ( plane_div, plane.angle.phi.d)
 }
 function step(timestamp) {
 
@@ -365,7 +415,7 @@ function toggleAnimation(timestamp) {
   } else {
     toggle = false;
     cancelAnimationFrame(stopId);
-    X = plane_obj.position.x;
+    X = plane.position.x;
 
   }
 }
