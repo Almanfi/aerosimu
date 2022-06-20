@@ -73,13 +73,13 @@ function init () {
 
   plane = {
     position : {
-        x : 20,
+        x : 50,
         y : 500,
         z : 0
     },
     angle : {
         phi : {
-          d : -0,
+          d : 8,
           max : 3,
           optim : 2,
         },
