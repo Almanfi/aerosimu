@@ -78,8 +78,8 @@ function init () {
   plane = {
     position : {
         x : 50,
-        y : 500,
-        z : 0
+        y : 400,
+        z : 100,
     },
     angle : {
         phi : {
@@ -88,7 +88,7 @@ function init () {
           optim : 2,
         },
         theta : {
-          d : 0,
+          d : 10,
           max : 3,
           optim : 2,
         },
@@ -107,6 +107,14 @@ function init () {
     turn_right(angle)  {
       plane.angle.phi.d += angle;
         return plane.angle.phi.d
+    },
+    go_down(angle)  {
+      plane.angle.theta.d -= angle;
+        return plane.angle.theta.d
+    },
+    go_up(angle)  {
+      plane.angle.theta.d += angle;
+        return plane.angle.theta.d
     },
     slowing (final_speed) {
       let slow_speed;
@@ -158,10 +166,12 @@ function init () {
     },
     moving () {
       var r = plane.speed * step_time/1000;
-        dx = Math.sin(plane.angle.phi.d*Math.PI/180) * r;
-        dy = Math.cos(plane.angle.phi.d*Math.PI/180) * r;
+        dx = Math.cos(plane.angle.theta.d*Math.PI/180) * Math.sin(plane.angle.phi.d*Math.PI/180) * r;
+        dy = Math.cos(plane.angle.theta.d*Math.PI/180) * Math.cos(plane.angle.phi.d*Math.PI/180) * r;
+        dz = Math.sin(plane.angle.theta.d*Math.PI/180) * r;
         plane.position.y -= dy;
         plane.position.x -= dx;
+        plane.position.z -= dz;
         onMap.rotate(plane_div,plane.angle.phi.d)
     },
     landing () {
@@ -185,18 +195,69 @@ function init () {
       if (auto_landing_ON & loc_captured) {
         if (X_of_phi === undefined) {
           rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
-          X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180)) ;
+          X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180));
+          X_of_phi_sign = 1;
         }
-        if ( Math.abs(plane.position.x)  < X_of_phi ) {
-          if (plane.angle.phi.d > 0) { 
-            plane.turn_left(plane.angle.phi.optim*step_time/1000)
-            if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+        // if (Z_of_theta === undefined) {
+        //   rho = (180/Math.PI) * (plane.speed/(plane.angle.theta.optim));
+        //   Z_of_theta = rho *(1-Math.cos(plane.angle.theta.d*Math.PI/180)) ;
+        // }
+
+        if (plane.position.x > 0) {
+          if (X_of_phi_sign == -1){
+            rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
+            X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180));
+            X_of_phi_sign = 1;
           }
-          if (plane.angle.phi.d < 0) {
-            plane.turn_right(plane.angle.phi.optim*step_time/1000)
-            if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+          if ( Math.abs(plane.position.x)  < X_of_phi) {
+            if (plane.angle.phi.d > 0) {
+              plane.turn_left(plane.angle.phi.optim*step_time/1000)
+              if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+            }
+            if (plane.angle.phi.d < 0) {
+              plane.turn_right(plane.angle.phi.optim*step_time/1000)
+              if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+            }
+          }
+        }else {
+          if (X_of_phi_sign == 1){
+            rho = (180/Math.PI) * (plane.speed/(plane.angle.phi.optim));
+            X_of_phi = rho *(1-Math.cos(plane.angle.phi.d*Math.PI/180));
+            X_of_phi_sign = -1;
+          }
+          if ( Math.abs(plane.position.x)  < X_of_phi) {
+            if (plane.angle.phi.d > 0) {
+              plane.turn_left(plane.angle.phi.optim*step_time/1000)
+              if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+            }
+            if (plane.angle.phi.d < 0) {
+              plane.turn_right(plane.angle.phi.optim*step_time/1000)
+              if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+            }
           }
         }
+
+        // if ( Math.abs(plane.position.x)  < X_of_phi) {
+        //   if (plane.angle.phi.d > 0) {
+        //     plane.turn_left(plane.angle.phi.optim*step_time/1000)
+        //     if (plane.angle.phi.d < 0) plane.angle.phi.d = 0;
+        //   }
+        //   if (plane.angle.phi.d < 0) {
+        //     plane.turn_right(plane.angle.phi.optim*step_time/1000)
+        //     if (plane.angle.phi.d > 0) plane.angle.phi.d = 0;
+        //   }
+        // }
+
+        // if ( Math.abs(plane.position.z)  < Z_of_theta) {
+        //   if (plane.angle.theta.d > 3) {
+        //     plane.go_down(plane.angle.theta.optim*step_time/1000)
+        //     if (plane.angle.theta.d < 0) plane.angle.theta.d = 0;
+        //   }
+        //   if (plane.angle.theta.d < 3) {
+        //     plane.go_up(plane.angle.theta.optim*step_time/1000)
+        //     if (plane.angle.theta.d > 0) plane.angle.theta.d = 0;
+        //   }
+        // }
       }
     }
 }
@@ -347,7 +408,7 @@ var onMap = {
     parent.style.top = 50 - y_pos + "%";
   },
   rotate (elem,deg) {
-    elem.style.transform = "rotate("+deg+"deg)"
+    elem.style.transform = "rotate("+deg+"deg)";
   },
 } 
 
@@ -374,6 +435,8 @@ var currentX;
 var Z_side;
 var rho;
 var X_of_phi;
+var X_of_phi_sign;
+var Z_of_theta;
 
 var SPEED_ON_CONTACT, TIME_OF_CONTACT, slow_factor, slow_rate ;
 var final_speed;
