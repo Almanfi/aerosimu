@@ -149,6 +149,13 @@ body{
     transform: translateX(0vh);
 
 }
+.indicatorY {
+    height: 0.6vh;
+    width: 12vh;
+    background-color: blueviolet;
+    transform: translatey(0.7vh);
+
+}
 
 .no_margine_3vh * {
     font-size: 3vh;
